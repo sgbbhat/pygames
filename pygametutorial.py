@@ -10,10 +10,15 @@ display_height = 600;
 # Define colors
 black = (0, 0, 0)
 white = (255, 255, 255)
-red = (255, 0, 0)
+
+red = (200, 0, 0)
 green = (0, 200, 0)
 blue = (0, 0 , 255)
+
 block_color = (53, 115, 255);
+
+bright_red = (255, 0, 0)
+bright_green = (0, 255, 0)
 
 gameDisplay = pg.display.set_mode((display_width, display_height));
 pg.display.set_caption('A bit Racey');
@@ -36,8 +41,18 @@ def game_intro():
         TextRect.center = ((display_width/2), (display_height/2));
         gameDisplay.blit(TextSurf, TextRect);
 
-        pg.draw.rect(gameDisplay, green , (150, 450, 100, 50));
-        pg.draw.rect(gameDisplay, red , (550, 450, 100, 50));
+        mouse = pg.mouse.get_pos();
+        # print(mouse);
+
+        if 150 + 100 > mouse[0] > 150 and 450+50 > mouse[1] > 450 :
+            pg.draw.rect(gameDisplay, bright_green , (150, 450, 100, 50));
+        else :
+            pg.draw.rect(gameDisplay, green , (150, 450, 100, 50));
+
+        if 550 + 100 > mouse[0] > 550 and 450+50 > mouse[1] > 450 :
+            pg.draw.rect(gameDisplay, bright_red , (550, 450, 100, 50));
+        else:
+            pg.draw.rect(gameDisplay, red , (550, 450, 100, 50));
 
         pg.display.update();
         clock.tick(15);
