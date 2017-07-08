@@ -26,6 +26,32 @@ clock = pg.time.Clock();
 
 carImg = pg.image.load('index.png');
 
+# Handling Button Events 
+def button(msg, x, y, width, height, inactive_color, active_color, action=None):
+    mouse = pg.mouse.get_pos();
+    
+    click = pg.mouse.get_pressed();
+    # print(click);
+
+    # Changing color when the mouse is on the button 
+    if x + width > mouse[0] > x and y + height > mouse[1] > y :
+        pg.draw.rect(gameDisplay, active_color , (x, y, width, height));
+        if click[0] == 1 and action != None:
+            if action == 'play':
+                game_loop();
+            elif action == 'quit':
+                pg.quit();
+                quit();
+    else :
+        pg.draw.rect(gameDisplay, inactive_color , (x, y, width, height));
+
+    # Text on button
+    smallText = pg.font.Font("freesansbold.ttf", 20);
+    textSurf, textRect = text_objects(msg, smallText);
+    textRect.center = ((x + (width/2)), (y + (height/2)));
+    gameDisplay.blit(textSurf, textRect);
+
+# Games' introduction scene
 def game_intro():
     intro = True;
 
@@ -40,19 +66,9 @@ def game_intro():
         TextSurf, TextRect = text_objects("GRAND PRIX", largeText);
         TextRect.center = ((display_width/2), (display_height/2));
         gameDisplay.blit(TextSurf, TextRect);
-
-        mouse = pg.mouse.get_pos();
-        # print(mouse);
-
-        if 150 + 100 > mouse[0] > 150 and 450+50 > mouse[1] > 450 :
-            pg.draw.rect(gameDisplay, bright_green , (150, 450, 100, 50));
-        else :
-            pg.draw.rect(gameDisplay, green , (150, 450, 100, 50));
-
-        if 550 + 100 > mouse[0] > 550 and 450+50 > mouse[1] > 450 :
-            pg.draw.rect(gameDisplay, bright_red , (550, 450, 100, 50));
-        else:
-            pg.draw.rect(gameDisplay, red , (550, 450, 100, 50));
+        
+        button("START", 150, 450, 100, 50 , green , bright_green, 'play');
+        button("QUIT", 550, 450, 100, 50 , red , bright_red, 'quit');
 
         pg.display.update();
         clock.tick(15);
@@ -97,10 +113,8 @@ def game_loop():
     
     dogded = 0;
 
-    # game loop
-    
+    # game loop    
     gameExit = False
-    
     while not gameExit:
         for event in pg.event.get():
             if event.type == pg.QUIT:
