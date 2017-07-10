@@ -21,10 +21,13 @@ bright_red = (255, 0, 0)
 bright_green = (0, 255, 0)
 
 gameDisplay = pg.display.set_mode((display_width, display_height));
-pg.display.set_caption('A bit Racey');
+pg.display.set_caption('Grand PriX');
 clock = pg.time.Clock();
 
+pause = False
+
 carImg = pg.image.load('index.png');
+pg.display.set_icon(carImg);
 
 # Handling Button Events 
 def button(msg, x, y, width, height, inactive_color, active_color, action=None):
@@ -42,6 +45,8 @@ def button(msg, x, y, width, height, inactive_color, active_color, action=None):
             elif action == 'quit':
                 pg.quit();
                 quit();
+            elif action == 'pause':
+                unpause();
     else :
         pg.draw.rect(gameDisplay, inactive_color , (x, y, width, height));
 
@@ -50,6 +55,33 @@ def button(msg, x, y, width, height, inactive_color, active_color, action=None):
     textSurf, textRect = text_objects(msg, smallText);
     textRect.center = ((x + (width/2)), (y + (height/2)));
     gameDisplay.blit(textSurf, textRect);
+
+def unpause():
+    global pause;
+    pause = False;
+
+# Game pause 
+def paused():
+    
+    largeText = pg.font.Font('freesansbold.ttf', 100);
+    TextSurf, TextRect = text_objects("PAUSED", largeText);
+    TextRect.center = ((display_width/2), (display_height/2));
+    gameDisplay.blit(TextSurf, TextRect);
+
+    while pause:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit();
+                quit();
+
+        # gameDisplay.fill(white);
+        
+        button("CONTINUE", 150, 450, 150, 50 , green , bright_green, 'pause');
+        button("QUIT", 550, 450, 100, 50 , red , bright_red, 'quit');
+
+        pg.display.update();
+        clock.tick(15);
+
 
 # Games' introduction scene
 def game_intro():
@@ -69,6 +101,8 @@ def game_intro():
         
         button("START", 150, 450, 100, 50 , green , bright_green, 'play');
         button("QUIT", 550, 450, 100, 50 , red , bright_red, 'quit');
+
+
 
         pg.display.update();
         clock.tick(15);
@@ -99,7 +133,24 @@ def car(x, y):
         gameDisplay.blit(carImg, (x,y));
 
 def crashed():
-	message_display('You crashed');
+    largeText = pg.font.Font('freesansbold.ttf', 100);
+    TextSurf, TextRect = text_objects("You Crashed", largeText);
+    TextRect.center = ((display_width/2), (display_height/2));
+    gameDisplay.blit(TextSurf, TextRect);
+
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit();
+                quit();
+
+        # gameDisplay.fill(white);
+        
+        button("Play Again", 150, 450, 150, 50 , green , bright_green, 'play');
+        button("QUIT", 550, 450, 100, 50 , red , bright_red, 'quit');
+
+        pg.display.update();
+        clock.tick(15);
 
 def game_loop():
     x = display_width * 0.4;
@@ -112,6 +163,8 @@ def game_loop():
     thing_height = 75;
     
     dogded = 0;
+
+    global pause;
 
     # game loop    
     gameExit = False
@@ -127,6 +180,10 @@ def game_loop():
                 
                 if event.key == pg.K_RIGHT:
                     x_change = 5;
+
+                if event.key == pg.K_p:
+                    pause = True;
+                    paused();
                     
             if event.type == pg.KEYUP:
                 if event.key == pg.K_LEFT or event.key == pg.K_RIGHT:
@@ -155,7 +212,6 @@ def game_loop():
                
         if y < thing_starty + thing_height :
             if x > thing_startx and x < (thing_startx + thing_width) or (x + 100) > thing_startx and x + 100 < (thing_startx + thing_width) :
-                print('x - crossover');
                 crashed();
 
         pg.display.update();
