@@ -104,6 +104,8 @@ def game_intro():
 
         # Git tutorial
 
+        # Editing the file in a new branch
+
         pg.display.update();
         clock.tick(15);
 
