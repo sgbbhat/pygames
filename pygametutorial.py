@@ -102,7 +102,7 @@ def game_intro():
         button("START", 150, 450, 100, 50 , green , bright_green, 'play');
         button("QUIT", 550, 450, 100, 50 , red , bright_red, 'quit');
 
-
+        # Git tutorial
 
         pg.display.update();
         clock.tick(15);
